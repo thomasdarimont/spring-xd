@@ -17,6 +17,7 @@
 package org.springframework.xd.analytics.ml.pmml;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -26,43 +27,44 @@ import org.springframework.util.Assert;
 import org.springframework.xd.tuple.Tuple;
 
 /**
- * An {@link TuplePmmlAnalyticOutputMapper} that can map the output of a {@link org.dmg.pmml.PMML} model evaluation of
+ * An {@link TuplePmmlAnalyticOutputDataMapper} that can map the output of a {@link org.dmg.pmml.PMML} model evaluation of
  * an Association model to a {@link org.springframework.xd.tuple.Tuple}. Since it requires special output mapping as no
  * output fields are created in the model.
- * 
+ *
  * @author Thomas Darimont
  */
-public class AssociationTuplePmmlAnalyticOutputMapper extends TuplePmmlAnalyticOutputMapper {
+public class AssociationTuplePmmlAnalyticOutputDataMapper extends TuplePmmlAnalyticOutputDataMapper {
 
 	/**
-	 * Creates a new {@link AssociationTuplePmmlAnalyticOutputMapper}.
-	 * 
+	 * Creates a new {@link AssociationTuplePmmlAnalyticOutputDataMapper}.
+	 *
 	 * @param outputFieldsNames
 	 */
-	public AssociationTuplePmmlAnalyticOutputMapper(List<String> outputFieldsNames) {
+	public AssociationTuplePmmlAnalyticOutputDataMapper(List<String> outputFieldsNames) {
 		super(outputFieldsNames);
 	}
 
 	/**
 	 * Extracts the item recommendations from the result of an association model evaluation. The outputFields must
 	 * contain exactly one field name. This field name will be used to store the list of the associated items.
-	 * 
+	 *
 	 * @param analytic must not be {@literal null}
 	 * @param outputFields must not be {@literal null}
 	 * @param modelOutput must not be {@literal null}
+	 * @return
 	 */
 	@Override
-	protected void enhanceResultIfNecessary(PmmlAnalytic<Tuple, Tuple> analytic, List<FieldName> outputFields,
-			Map<FieldName, Object> modelOutput) {
+	protected Map<FieldName, Object> enhanceResultIfNecessary(PmmlAnalytic<Tuple, Tuple> analytic, List<FieldName> outputFields,
+															  Map<FieldName, Object> modelOutput) {
 
 		Assert.notNull(analytic, "analytic");
 		Assert.notNull(modelOutput, "modelOutput");
 		Assert.notNull(outputFields, "outputFields");
 		Assert.state(outputFields.size() == 1, "output fields must contain 1 fieldName mapping only");
 
-		Model pmmlModel = analytic.getDefaultModel();
+		Model pmmlModel = analytic.getSelectedModel();
 		if (!(pmmlModel instanceof AssociationModel)) {
-			super.enhanceResultIfNecessary(analytic, outputFields, modelOutput);
+			return super.enhanceResultIfNecessary(analytic, outputFields, modelOutput);
 		}
 
 		AssociationModel ass = (AssociationModel) pmmlModel;
@@ -77,6 +79,6 @@ public class AssociationTuplePmmlAnalyticOutputMapper extends TuplePmmlAnalyticO
 			itemIds.add(item.getValue());
 		}
 
-		modelOutput.put(outputFields.iterator().next(), itemIds);
+		return Collections.<FieldName, Object>singletonMap(outputFields.iterator().next(), itemIds);
 	}
 }

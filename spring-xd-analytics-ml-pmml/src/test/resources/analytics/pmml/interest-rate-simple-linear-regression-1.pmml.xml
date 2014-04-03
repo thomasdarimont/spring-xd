@@ -10,7 +10,7 @@
         <DataField name="rate" optype="continuous" dataType="double"/>
         <DataField name="year" optype="continuous" dataType="double"/>
     </DataDictionary>
-    <RegressionModel modelName="Linear_Regression_Model" functionName="regression" algorithmName="least squares"
+    <RegressionModel modelName="interest-rate-simple-linear-regression-1" functionName="regression" algorithmName="least squares"
                      targetFieldName="rate">
         <MiningSchema>
             <MiningField name="rate" usageType="predicted"/>

@@ -27,13 +27,13 @@ import org.springframework.util.Assert;
 import org.xml.sax.InputSource;
 
 /**
- * An abstract implementation of a {@link org.springframework.xd.analytics.ml.pmml.PmmlResolver} that can build a
+ * An abstract implementation of a {@link PmmlLoader} that can build a
  * {@link org.dmg.pmml.PMML} instance form a given {@link org.xml.sax.InputSource}. Sub-classes can customize the
  * resolving process by implementing the {@link #getPmmlText(String)} method.
  * 
  * @author Thomas Darimont
  */
-public abstract class AbstractPmmlResolver implements PmmlResolver {
+public abstract class AbstractPmmlLoader implements PmmlLoader {
 
 	protected final Log log = LogFactory.getLog(this.getClass());
 
@@ -41,25 +41,25 @@ public abstract class AbstractPmmlResolver implements PmmlResolver {
 	 * Performs the actual resolving process. Sub-classes should override this method to implement other resolve
 	 * mechanisms.
 	 * 
-	 * @param name
+	 * @param modelLocation
 	 * @return
 	 * @throws Exception
 	 */
-	protected abstract InputSource getPmmlText(String name) throws Exception;
+	protected abstract InputSource getPmmlText(String modelLocation) throws Exception;
 
 	/**
 	 * Returns an {@link org.dmg.pmml.PMML} instance form the given {@code name}.
 	 * 
-	 * @param name must not be {@literal null}.
+	 * @param modelLocation must not be {@literal null}.
 	 * @return
 	 */
-	public PMML getPmml(final String name) {
+	public PMML loadPmml(final String modelLocation) {
 
-		Assert.notNull("name", name);
+		Assert.notNull("modelLocation", modelLocation);
 
 		try {
 
-			InputSource pmmlText = getPmmlText(name);
+			InputSource pmmlText = getPmmlText(modelLocation);
 
 			// ImportFilter handles PMML version differences
 			SAXSource transformedSource = ImportFilter.apply(pmmlText);

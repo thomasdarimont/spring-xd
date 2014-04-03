@@ -124,7 +124,7 @@ ext {
 	tomcatJdbcPoolVersion = '7.0.42'
 	tomcatVersion = '7.0.35'
 	uuidVersion = '3.2'
-    jpmmlEvaluatorVersion = '1.1.0'
+    jpmmlEvaluatorVersion = '1.1.1'
 
 	// Hadoop Versions
 	hadoop12Version = '1.2.1'

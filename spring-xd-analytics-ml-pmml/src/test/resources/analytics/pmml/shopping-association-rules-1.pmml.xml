@@ -9,7 +9,7 @@
         <DataField name="transaction" optype="categorical" dataType="string"/>
         <DataField name="item" optype="categorical" dataType="string"/>
     </DataDictionary>
-    <AssociationModel functionName="associationRules" numberOfTransactions="7" numberOfItems="6" minimumSupport="0.5"
+    <AssociationModel modelName="shopping-association-rules-1" functionName="associationRules" numberOfTransactions="7" numberOfItems="6" minimumSupport="0.5"
                       minimumConfidence="0.9" numberOfItemsets="2" numberOfRules="1">
         <MiningSchema>
             <MiningField name="transaction" usageType="group"/>

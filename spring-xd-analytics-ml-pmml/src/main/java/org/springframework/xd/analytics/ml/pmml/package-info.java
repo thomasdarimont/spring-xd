@@ -15,9 +15,8 @@
  */
 
 /**
- * Package for PMML support.
+ * Package core abstractions for PMML support.
  * @author Thomas Darimont
  */
-
 package org.springframework.xd.analytics.ml.pmml;
 

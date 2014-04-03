@@ -22,7 +22,9 @@ import static org.springframework.xd.analytics.ml.pmml.TupleTestUtils.*;
 
 import java.util.Arrays;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.xd.analytics.ml.Analytic;
 import org.springframework.xd.tuple.Tuple;

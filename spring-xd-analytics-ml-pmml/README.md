@@ -3,8 +3,8 @@ Spring XD Analytics ML - PMML
 
 # Stream definition
 Create the stream definition.
-Note that you need to copy the iris-flower-classification-naive-bayes-1.pmml.xml file form the
-spring-xd-analytics-ml-pmml/src/test/resources/pmml folder to the folder {XD_HOME}/analytics.
+Note that you need to copy the iris-flower-classification-naive-bayes-1.pmml.xml file from the
+spring-xd-analytics-ml-pmml/src/test/resources/pmml folder to the folder {XD_HOME}/modules/processors/analytic-pmml/.
 
 ```
 stream create
@@ -40,6 +40,6 @@ Output:
 	,"sepalWidth":"3.2"
 	,"petalLength":"4.5"
 	,"petalWidth":"1.5"
-	,"predictedSpecies":"setosa"
+	,"predictedSpecies":"versicolor"
 }
 ```

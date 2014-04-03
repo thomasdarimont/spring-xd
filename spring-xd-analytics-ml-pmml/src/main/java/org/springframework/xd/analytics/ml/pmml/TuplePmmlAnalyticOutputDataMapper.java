@@ -20,6 +20,7 @@ import java.util.*;
 
 import org.dmg.pmml.FieldName;
 import org.springframework.util.Assert;
+import org.springframework.xd.analytics.ml.AbstractFieldMappingAwareDataMapper;
 import org.springframework.xd.analytics.ml.OutputMapper;
 import org.springframework.xd.tuple.Tuple;
 import org.springframework.xd.tuple.TupleBuilder;
@@ -30,7 +31,7 @@ import org.springframework.xd.tuple.TupleBuilder;
  * 
  * @author Thomas Darimont
  */
-public class TuplePmmlAnalyticOutputMapper implements
+public class TuplePmmlAnalyticOutputDataMapper extends AbstractFieldMappingAwareDataMapper implements
 		OutputMapper<Tuple, Tuple, PmmlAnalytic<Tuple, Tuple>, Map<FieldName, Object>> {
 
 	private final Map<String, String> resultFieldToOutputFieldNameMapping;
@@ -38,11 +39,11 @@ public class TuplePmmlAnalyticOutputMapper implements
 	private final List<FieldName> resultFields;
 
 	/**
-	 * Creates a new {@link TuplePmmlAnalyticOutputMapper}.
+	 * Creates a new {@link TuplePmmlAnalyticOutputDataMapper}.
 	 * 
 	 * @param resultFieldToOutputFieldNameMapping
 	 */
-	public TuplePmmlAnalyticOutputMapper(List<String> resultFieldToOutputFieldNameMapping) {
+	public TuplePmmlAnalyticOutputDataMapper(List<String> resultFieldToOutputFieldNameMapping) {
 
 		if (resultFieldToOutputFieldNameMapping == null || resultFieldToOutputFieldNameMapping.isEmpty()) {
 			this.resultFieldToOutputFieldNameMapping = null;
@@ -64,19 +65,10 @@ public class TuplePmmlAnalyticOutputMapper implements
 
 		Assert.notNull(resultFieldToOutputFieldNameMapping, "resultFieldToOutputFieldNameMapping");
 
-		for (String fieldNameMapping : resultFieldToOutputFieldNameMapping) {
-
-			String fieldNameFrom = fieldNameMapping;
-			String fieldNameTo = fieldNameMapping;
-
-			if (fieldNameMapping.contains(":")) {
-				String[] fromTo = fieldNameMapping.split(":");
-				fieldNameFrom = fromTo[0];
-				fieldNameTo = fromTo[1];
-			}
-
-			this.resultFieldToOutputFieldNameMapping.put(fieldNameFrom, fieldNameTo);
-			this.resultFields.add(new FieldName(fieldNameFrom));
+		Map<String,String> mapping = extractFieldNameMappingFrom(resultFieldToOutputFieldNameMapping);
+		for(Map.Entry<String,String> toFromMapping : mapping.entrySet()){
+			this.resultFieldToOutputFieldNameMapping.put(toFromMapping.getKey(), toFromMapping.getValue());
+			this.resultFields.add(new FieldName(toFromMapping.getKey()));
 		}
 	}
 
@@ -92,9 +84,9 @@ public class TuplePmmlAnalyticOutputMapper implements
 		List<String> outputNames = new ArrayList<String>(input.getFieldNames());
 		List<Object> outputValues = new ArrayList<Object>(input.getValues());
 
-		enhanceResultIfNecessary(analytic, resultFields, modelOutput);
+		Map<FieldName,Object> enhancedModelOutput = enhanceResultIfNecessary(analytic, resultFields, modelOutput);
 
-		addEntriesFromResult(modelOutput, outputNames, outputValues);
+		addOutputEntriesFromModelOutput(enhancedModelOutput, outputNames, outputValues);
 
 		return TupleBuilder.tuple().ofNamesAndValues(outputNames, outputValues);
 	}
@@ -102,14 +94,15 @@ public class TuplePmmlAnalyticOutputMapper implements
 	/**
 	 * Sub-classes can customize the model-output before it is mapped to a {@link org.springframework.xd.tuple.Tuple} if
 	 * necessary.
-	 * 
+	 *
 	 * @param analytic
 	 * @param outputFields
 	 * @param modelOutput
+	 * @return
 	 */
-	protected void enhanceResultIfNecessary(PmmlAnalytic<Tuple, Tuple> analytic, List<FieldName> outputFields,
-			Map<FieldName, Object> modelOutput) {
-		// NOOP
+	protected Map<FieldName, Object> enhanceResultIfNecessary(PmmlAnalytic<Tuple, Tuple> analytic, List<FieldName> outputFields,
+															  Map<FieldName, Object> modelOutput) {
+		return modelOutput;
 	}
 
 	/**
@@ -120,8 +113,8 @@ public class TuplePmmlAnalyticOutputMapper implements
 	 * @param outputNames
 	 * @param outputValues
 	 */
-	protected void addEntriesFromResult(Map<FieldName, ? super Object> modelOutput, List<String> outputNames,
-			List<Object> outputValues) {
+	protected void addOutputEntriesFromModelOutput(Map<FieldName, ? super Object> modelOutput, List<String> outputNames,
+												   List<Object> outputValues) {
 
 		Collection<FieldName> resultFieldNames = resultFields == null ? modelOutput.keySet() : resultFields;
 

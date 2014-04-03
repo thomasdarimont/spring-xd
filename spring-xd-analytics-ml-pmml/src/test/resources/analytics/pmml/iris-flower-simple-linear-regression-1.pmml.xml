@@ -9,7 +9,7 @@
         <DataField name="Petal.Width" optype="continuous" dataType="double"/>
         <DataField name="Petal.Length" optype="continuous" dataType="double"/>
     </DataDictionary>
-    <RegressionModel modelName="Linear_Regression_Model" functionName="regression" algorithmName="least squares"
+    <RegressionModel modelName="iris-flower-simple-linear-regression-1" functionName="regression" algorithmName="least squares"
                      targetFieldName="Petal.Width">
         <MiningSchema>
             <MiningField name="Petal.Width" usageType="predicted"/>

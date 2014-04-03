@@ -39,9 +39,9 @@ public class AssociationAnalysisPmmlAnalyticTest extends AbstractPmmlAnalyticTes
 	@SuppressWarnings("unchecked")
 	public void testEvaluateAssociationRules1shopping() {
 
-		Analytic<Tuple, Tuple> analytic = useAnalytic("shopping-association-rules-1", getPmmlResolver(),
-				new TuplePmmlAnalyticInputMapper(null),
-				new AssociationTuplePmmlAnalyticOutputMapper(Arrays.asList("Predicted_item")));
+		Analytic<Tuple, Tuple> analytic = useAnalytic("shopping-association-rules-1",null,
+				new TuplePmmlAnalyticInputDataMapper(null),
+				new AssociationTuplePmmlAnalyticOutputDataMapper(Arrays.asList("Predicted_item")));
 
 		Tuple output = analytic.evaluate(objectToTuple(new Object() {
 
